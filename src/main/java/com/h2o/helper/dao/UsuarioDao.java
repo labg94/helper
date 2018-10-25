@@ -16,4 +16,7 @@ public interface UsuarioDao  extends CrudRepository<Usuario,Long> {
     @Override
     @Transactional
     Iterable<Usuario> findAll();
+
+    @Override
+    void deleteAll();
 }

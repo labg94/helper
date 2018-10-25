@@ -178,5 +178,11 @@ public class UsuarioController {
 
     }
 
+    @RequestMapping(value = "/eliminarUsaurios",method = RequestMethod.GET)
+    public String eliminarUsuarios() throws Exception {
+        usuarioDao.deleteAll();
+        return "eliminados";
+    }
+
 
 }
