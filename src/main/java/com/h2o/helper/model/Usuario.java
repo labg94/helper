@@ -1,33 +1,43 @@
 package com.h2o.helper.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.gson.annotations.Expose;
 import org.springframework.beans.factory.annotation.Value;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-public class Usuario {
+public class Usuario implements Serializable {
 
     @Id
+    @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Expose
     private long id;
+    @Expose
+    private String nombre, mail, rut,pass,phone;
+    @Expose
+    private float score;
 
-    private String nombre,apellido, direccion, correo, foto,cuenta;
-    private int telefono;
+    @OneToMany(fetch= FetchType.LAZY, mappedBy="usuario")
+    @Expose
+    private List<Solicitud> solicitudList;
 
     public Usuario() {
+        solicitudList= new ArrayList<>();
     }
 
-    public Usuario(String nombre, String apellido, String direccion, String correo, String foto, String cuenta, int telefono) {
+    public Usuario(String nombre, String mail, String rut, String pass, String phone, float score) {
         this.nombre = nombre;
-        this.apellido = apellido;
-        this.direccion = direccion;
-        this.correo = correo;
-        this.foto = foto;
-        this.cuenta = cuenta;
-        this.telefono = telefono;
+        this.mail = mail;
+        this.rut = rut;
+        this.pass = pass;
+        this.phone = phone;
+        this.score = score;
+        solicitudList= new ArrayList<>();
     }
 
     public long getId() {
@@ -46,51 +56,65 @@ public class Usuario {
         this.nombre = nombre;
     }
 
-    public String getApellido() {
-        return apellido;
+    public String getMail() {
+        return mail;
     }
 
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
+    public void setMail(String mail) {
+        this.mail = mail;
     }
 
-    public String getDireccion() {
-        return direccion;
+    public String getRut() {
+        return rut;
     }
 
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
+    public void setRut(String rut) {
+        this.rut = rut;
     }
 
-    public String getCorreo() {
-        return correo;
+    public String getPass() {
+        return pass;
     }
 
-    public void setCorreo(String correo) {
-        this.correo = correo;
+    public void setPass(String pass) {
+        this.pass = pass;
     }
 
-    public String getFoto() {
-        return foto;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setFoto(String foto) {
-        this.foto = foto;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
-    public String getCuenta() {
-        return cuenta;
+    public float getScore() {
+        return score;
     }
 
-    public void setCuenta(String cuenta) {
-        this.cuenta = cuenta;
+    public void setScore(float score) {
+        this.score = score;
     }
 
-    public int getTelefono() {
-        return telefono;
+    public List<Solicitud> getSolicitudList() {
+        return solicitudList;
     }
 
-    public void setTelefono(int telefono) {
-        this.telefono = telefono;
+    public void setSolicitudList(List<Solicitud> solicitudList) {
+        this.solicitudList = solicitudList;
+    }
+
+    @Override
+    public String toString() {
+        return "Usuario{" +
+                "id=" + id +
+                ", nombre='" + nombre + '\'' +
+                ", mail='" + mail + '\'' +
+                ", rut='" + rut + '\'' +
+                ", pass='" + pass + '\'' +
+                ", phone='" + phone + '\'' +
+                ", score=" + score +'\'' +
+                ", solicitudes=" + solicitudList +'\'' +
+                '}';
     }
 }
