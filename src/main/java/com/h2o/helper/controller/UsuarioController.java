@@ -84,7 +84,7 @@ public class UsuarioController {
 
     }
 
-    @RequestMapping(value = "/list",method = RequestMethod.GET)
+    @RequestMapping(value = "/list",method = RequestMethod.GET, produces = "application/json")
     public String listar() throws Exception {
        Iterable<Usuario> usuariosite = usuarioDao.findAll();
        List<Usuario> usuarios = new ArrayList<>();
@@ -98,8 +98,9 @@ public class UsuarioController {
         JsonArray jsonArray = new JsonArray();
         for (Usuario u:usuariosite) {
             JsonObject json = new JsonObject();
-            json.add("usuario",gson.toJsonTree(u));
-            jsonArray.add(json);
+//            json.add("usuario",gson.toJsonTree(u));
+//            jsonArray.add(json);
+            jsonArray.add(gson.toJsonTree(u));
         }
 
 
@@ -148,7 +149,7 @@ public class UsuarioController {
 
 
     @RequestMapping(value = "/listSolicitud",method = RequestMethod.GET)
-    public String listarSolicitud() throws Exception {
+    public JsonObject listarSolicitud() throws Exception {
         Iterable<Solicitud> solicitudIterable = solicitudDao.findAll();
         List<Solicitud> solicitudArrayList = new ArrayList<>();
         solicitudIterable.forEach(solicitudArrayList::add);
@@ -156,25 +157,25 @@ public class UsuarioController {
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create();
         JsonArray jsonArray = new JsonArray();
         for (Solicitud s:solicitudIterable) {
-            JsonObject json = new JsonObject();
+//            JsonObject json = new JsonObject();
             JsonObject jsonSolicitud = new JsonObject();
-//            jsonSolicitud.addProperty("id",s.getId());
-//            jsonSolicitud.addProperty("name",s.getName());
-//            jsonSolicitud.addProperty("phone",s.getPhone());
-//            jsonSolicitud.addProperty("place",s.getPlace());
-//            jsonSolicitud.addProperty("problem",s.getProblem());
-//            jsonSolicitud.addProperty("state",s.getState());
-//            jsonSolicitud.addProperty("urgency",s.getUrgency());
-//            jsonSolicitud = gson.toJsonTree(s).getAsJsonObject();
+            jsonSolicitud.addProperty("id",s.getId());
+            jsonSolicitud.addProperty("name",s.getName());
+            jsonSolicitud.addProperty("phone",s.getPhone());
+            jsonSolicitud.addProperty("place",s.getPlace());
+            jsonSolicitud.addProperty("problem",s.getProblem());
+            jsonSolicitud.addProperty("state",s.getState());
+            jsonSolicitud.addProperty("urgency",s.getUrgency());
+            jsonSolicitud = gson.toJsonTree(s).getAsJsonObject();
 
-            json.add("Solicitud",gson.toJsonTree(s));
-            jsonArray.add(json);
+//            json.add("Solicitud",gson.toJsonTree(s));
+            jsonArray.add(jsonSolicitud);
         }
 
         JsonObject jsonusuarios = new JsonObject();
         jsonusuarios.add("Solicitudes", gson.toJsonTree(jsonArray));
 
-        return  jsonusuarios.toString();
+        return  jsonusuarios;
 
     }
 
