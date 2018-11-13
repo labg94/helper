@@ -18,9 +18,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -119,7 +117,7 @@ public class UsuarioController {
     }
 
 
-    @RequestMapping(value = "/createSolcitud",method = RequestMethod.GET)
+    @RequestMapping(value = "/createSolcitud",method = RequestMethod.GET,produces = "application/json")
     public String agregarSolicitud(HttpServletRequest r){
         String problem = r.getParameter("problem");
         String place = r.getParameter("place");
@@ -127,7 +125,8 @@ public class UsuarioController {
         String name = r.getParameter("name");
         String phone = r.getParameter("phone");
         String state = r.getParameter("state");
-        String userId = r.getParameter("userid");
+        String userId = r.getParameter("userId");
+
 
 
         Solicitud solicitud = new Solicitud(problem,place,urgency,name,phone,state);
@@ -141,15 +140,50 @@ public class UsuarioController {
 //
 //        json.add("usuario",gson.toJsonTree(u));
         jsonObject.add("solicitud",new Gson().toJsonTree(solicitud));
-        usuario = usuarioDao.findById(Long.valueOf(userId)).orElse(new Usuario());
-        solicitud.setUsuario(usuario);
+
+        if (userId!=null) {
+            usuario = usuarioDao.findById(Long.valueOf(userId)).orElse(new Usuario());
+            solicitud.setUsuario(usuario);
+        }
+
         solicitudDao.save(solicitud);
         return jsonObject.toString();
     }
 
+    @RequestMapping(value = "/solicitudUsuario",method = RequestMethod.GET, produces = "application/json")
+    public String listarDisponibles() throws Exception {
+        String state = "Disponible";
+        Iterable<Solicitud> solicitudIterable = solicitudDao.findAllByState(state);
+        List<Solicitud> solicitudArrayList = new ArrayList<>();
+        solicitudIterable.forEach(solicitudArrayList::add);
+//        Gson  gson = new Gson();
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create();
+        JsonArray jsonArray = new JsonArray();
+        for (Solicitud s:solicitudIterable) {
+//            JsonObject json = new JsonObject();
+            JsonObject jsonSolicitud = new JsonObject();
+            jsonSolicitud.addProperty("id",s.getId());
+            jsonSolicitud.addProperty("name",s.getName());
+            jsonSolicitud.addProperty("phone",s.getPhone());
+            jsonSolicitud.addProperty("place",s.getPlace());
+            jsonSolicitud.addProperty("problem",s.getProblem());
+            jsonSolicitud.addProperty("state",s.getState());
+            jsonSolicitud.addProperty("urgency",s.getUrgency());
+            jsonSolicitud = gson.toJsonTree(s).getAsJsonObject();
 
-    @RequestMapping(value = "/listSolicitud",method = RequestMethod.GET)
-    public JsonObject listarSolicitud() throws Exception {
+//            json.add("Solicitud",gson.toJsonTree(s));
+            jsonArray.add(jsonSolicitud);
+        }
+
+        JsonObject jsonusuarios = new JsonObject();
+        jsonusuarios.add("Solicitudes", gson.toJsonTree(jsonArray));
+
+        return  jsonusuarios.toString();
+    }
+
+
+    @RequestMapping(value = "/listSolicitud",method = RequestMethod.GET, produces = "application/json")
+    public String listarSolicitud() throws Exception {
         Iterable<Solicitud> solicitudIterable = solicitudDao.findAll();
         List<Solicitud> solicitudArrayList = new ArrayList<>();
         solicitudIterable.forEach(solicitudArrayList::add);
@@ -175,8 +209,7 @@ public class UsuarioController {
         JsonObject jsonusuarios = new JsonObject();
         jsonusuarios.add("Solicitudes", gson.toJsonTree(jsonArray));
 
-        return  jsonusuarios;
-
+        return  jsonusuarios.toString();
     }
 
     @RequestMapping(value = "/eliminarUsaurios",method = RequestMethod.GET)
@@ -185,5 +218,25 @@ public class UsuarioController {
         return "eliminados";
     }
 
+    @GetMapping(value ="/asignar")
+    public String asignacion(HttpServletRequest r){
+        String sol = r.getParameter("solicitud");
+        String user = r.getParameter("usuario");
 
+        int idsol = Integer.parseInt(sol);
+        int iduser = Integer.parseInt(user);
+
+        Solicitud solicitud = solicitudDao.findById(idsol);
+
+        solicitud.setUsuario(usuarioDao.findById(iduser));
+        String respuesta = null;
+        try {
+            solicitudDao.save(solicitud);
+            respuesta = "actualizado";
+        }catch (Exception e){
+            respuesta ="Error\n"+ e.getMessage();
+        } finally {
+          return  respuesta;
+        }
+    }
 }

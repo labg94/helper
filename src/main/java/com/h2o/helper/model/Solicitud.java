@@ -2,6 +2,7 @@ package com.h2o.helper.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.gson.annotations.Expose;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -28,8 +29,9 @@ public class Solicitud implements Serializable {
     private String state;
 
     @ManyToOne(fetch=FetchType.LAZY,optional = false)
-    @JoinColumn(name="user_id",nullable=false)
+    @JoinColumn(name="user_id",nullable = true)
     @JsonIgnore
+    @Nullable
     @Expose(serialize = false)
     private  Usuario usuario;
 

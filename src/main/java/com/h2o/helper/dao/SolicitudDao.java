@@ -10,9 +10,12 @@ public interface SolicitudDao extends CrudRepository<Solicitud,Long> {
     @Override
     <S extends Solicitud> S save(S s);
 
-    Iterable<Solicitud> findAllByUsuarioRut(String rut);
+
+    Iterable<Solicitud> findAllByUsuarioId(int id);
 
     Iterable<Solicitud> findAllByUsuarioRutAndState(String rut,String state);
 
     Iterable<Solicitud> findAllByState(String state);
+
+    Solicitud findById(int idsol);
 }
