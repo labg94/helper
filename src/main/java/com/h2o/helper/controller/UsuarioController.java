@@ -243,4 +243,25 @@ public class UsuarioController {
     }
 
 
+    @GetMapping(value ="/terminado")
+    public String terminado(HttpServletRequest r){
+        String sol = r.getParameter("solicitud");
+
+
+        int idsol = Integer.parseInt(sol);
+
+        Solicitud solicitud = solicitudDao.findById(idsol);
+
+        String respuesta = null;
+        try {
+            solicitud.setState("terminado");
+            solicitudDao.save(solicitud);
+            respuesta = "Terminado";
+        }catch (Exception e){
+            respuesta ="Error\n"+ e.getMessage();
+        } finally {
+            return  respuesta;
+        }
+    }
+
 }
