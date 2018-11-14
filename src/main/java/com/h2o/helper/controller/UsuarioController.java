@@ -208,7 +208,7 @@ public class UsuarioController {
 
         JsonObject jsonusuarios = new JsonObject();
         jsonusuarios.add("solicituds", gson.toJsonTree(jsonArray));
-
+//cambia plis
         return  jsonusuarios.toString();
     }
 
