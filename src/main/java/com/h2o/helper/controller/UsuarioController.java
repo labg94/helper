@@ -223,6 +223,7 @@ public class UsuarioController {
         String sol = r.getParameter("solicitud");
         String user = r.getParameter("usuario");
 
+
         int idsol = Integer.parseInt(sol);
         int iduser = Integer.parseInt(user);
 
@@ -231,6 +232,7 @@ public class UsuarioController {
         solicitud.setUsuario(usuarioDao.findById(iduser));
         String respuesta = null;
         try {
+            solicitud.setState("actual");
             solicitudDao.save(solicitud);
             respuesta = "actualizado";
         }catch (Exception e){
@@ -239,4 +241,6 @@ public class UsuarioController {
           return  respuesta;
         }
     }
+
+
 }
