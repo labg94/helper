@@ -29,7 +29,7 @@ public class Solicitud implements Serializable {
     private String state;
 
     @ManyToOne(fetch=FetchType.LAZY,optional = false)
-    @JoinColumn(name="user_id",nullable = true)
+    @JoinColumn(name="user_id")
     @JsonIgnore
     @Nullable
     @Expose(serialize = false)

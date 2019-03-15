@@ -9,13 +9,13 @@ public interface UsuarioDao  extends CrudRepository<Usuario,Long> {
 
     Usuario findById(long id);
 
-    //funcion
     @Override
     <S extends Usuario> S save(S s);
 
     @Override
     @Transactional
     Iterable<Usuario> findAll();
+
 
     @Override
     void deleteAll();
