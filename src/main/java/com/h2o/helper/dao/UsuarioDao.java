@@ -12,6 +12,9 @@ public interface UsuarioDao  extends CrudRepository<Usuario,Long> {
     @Override
     <S extends Usuario> S save(S s);
 
+
+    Usuario findByIdAndAndNombre(long id, String nombre);
+
     @Override
     @Transactional
     Iterable<Usuario> findAll();
